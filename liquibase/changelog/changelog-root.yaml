@@ -1,4 +1,4 @@
-#databaseChangeLog:
-#  - include:
-#      file: shared/V1__base_schema.yaml
-#      relativeToChangelogFile: true
+databaseChangeLog:
+  - include:
+      file: shared/V1.0__initial_schema.yaml
+      relativeToChangelogFile: true

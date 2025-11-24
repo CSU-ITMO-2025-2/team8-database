@@ -1,0 +1,207 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1-initial-schema
+      author: "Maksim Parfenov"
+      changes:
+        # ---------- users ----------
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_users
+                    nullable: false
+              - column:
+                  name: login
+                  type: VARCHAR(64)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uq_users_login
+              - column:
+                  name: hashed_password
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_admin
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        # ---------- chat_sessions ----------
+        - createTable:
+            tableName: chat_sessions
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_chat_sessions
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_chat_sessions_user_id
+                    references: users(id)
+              - column:
+                  name: title
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: model_name
+                  type: VARCHAR(100)
+                  defaultValue: "gemma-3"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: temperature
+                  type: DOUBLE PRECISION
+                  defaultValueNumeric: 0.7
+                  constraints:
+                    nullable: false
+              - column:
+                  name: max_tokens
+                  type: INT
+                  defaultValueNumeric: 1024
+                  constraints:
+                    nullable: false
+              - column:
+                  name: extra_params
+                  type: JSONB
+                  constraints:
+                    nullable: true
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_archived
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+
+        # ---------- messages ----------
+        - createTable:
+            tableName: messages
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_messages
+                    nullable: false
+              - column:
+                  name: session_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_messages_session_id
+                    references: chat_sessions(id)
+              - column:
+                  name: role
+                  type: VARCHAR(16)          # user / assistant / system / tool
+                  constraints:
+                    nullable: false
+              - column:
+                  name: content
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: prompt_tokens
+                  type: INT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: completion_tokens
+                  type: INT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: latency_ms
+                  type: INT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: metadata
+                  type: JSONB
+                  constraints:
+                    nullable: true
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_visible
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+
+        # ---------- indexes ----------
+        - createIndex:
+            tableName: chat_sessions
+            indexName: ix_sessions_user_created
+            columns:
+              - column:
+                  name: user_id
+              - column:
+                  name: created_at
+
+        - createIndex:
+            tableName: messages
+            indexName: ix_messages_session_created
+            columns:
+              - column:
+                  name: session_id
+              - column:
+                  name: created_at
+
+        - createIndex:
+            tableName: messages
+            indexName: ix_messages_role
+            columns:
+              - column:
+                  name: role

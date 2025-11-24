@@ -1,0 +1,23 @@
+{
+    "Servers": {
+        "1": {
+            "Name": "db",
+            "Group": "Servers",
+            "Host": "postgres",
+            "Port": 5432,
+            "MaintenanceDB": "postgres",
+            "Username": "postgres",
+            "UseSSHTunnel": 0,
+            "TunnelPort": "22",
+            "TunnelAuthentication": 0,
+            "TunnelKeepAlive": 0,
+            "KerberosAuthentication": false,
+            "ConnectionParameters": {
+                "sslmode": "prefer",
+                "passfile": "/pgadmin4/.dbpass",
+                "connect_timeout": 10
+            },
+            "Tags": []
+        }
+    }
+}

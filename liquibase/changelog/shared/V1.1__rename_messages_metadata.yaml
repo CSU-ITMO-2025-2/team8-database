@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2-rename-messages-metadata-column
+      author: "Maksim Parfenov"
+      changes:
+        - renameColumn:
+            tableName: messages
+            oldColumnName: metadata
+            newColumnName: meta
+            columnDataType: JSONB

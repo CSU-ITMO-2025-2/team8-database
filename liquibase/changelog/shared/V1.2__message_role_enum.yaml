@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1-2-message-role-enum
+      author: "Maksim Parfenov"
+      changes:
+        - sql:
+            dbms: postgresql
+            sql: |
+              CREATE TYPE messagerole AS ENUM ('USER', 'ASSISTANT', 'SYSTEM', 'TOOL');
+        - sql:
+            dbms: postgresql
+            sql: |
+              ALTER TABLE messages
+              ALTER COLUMN role TYPE messagerole
+              USING UPPER(role)::messagerole;
+
+      rollback:
+        - sql:
+            dbms: postgresql
+            sql: |
+              ALTER TABLE messages
+              ALTER COLUMN role TYPE VARCHAR(16);
+
+        - sql:
+            dbms: postgresql
+            sql: |
+              DROP TYPE IF EXISTS messagerole;

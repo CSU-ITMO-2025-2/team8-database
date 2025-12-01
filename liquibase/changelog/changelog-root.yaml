@@ -5,3 +5,6 @@ databaseChangeLog:
   - include:
       file: shared/V1.1__rename_messages_metadata.yaml
       relativeToChangelogFile: true
+  - include:
+      file: shared/V1.2__message_role_enum.yaml
+      relativeToChangelogFile: true
